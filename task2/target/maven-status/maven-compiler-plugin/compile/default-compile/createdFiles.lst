@@ -1,0 +1,6 @@
+helper\GameHelper.class
+quizgame\Game.class
+quizgame\WrongUpperRangeException.class
+quizgame\Game$NumberGenerator.class
+helper\GameHelper$Message.class
+GameStart.class
