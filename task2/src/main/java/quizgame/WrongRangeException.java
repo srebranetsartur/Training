@@ -1,11 +1,11 @@
 package quizgame;
 
-public class WrongUpperRangeException extends RuntimeException {
-    public WrongUpperRangeException() {
+public class WrongRangeException extends RuntimeException {
+    public WrongRangeException() {
         super();
     }
 
-    public WrongUpperRangeException(String message) {
+    public WrongRangeException(String message) {
         super(message);
     }
 }

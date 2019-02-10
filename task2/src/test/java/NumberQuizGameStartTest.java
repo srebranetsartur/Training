@@ -1,17 +1,30 @@
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import quizgame.Game;
+import quizgame.WrongRangeException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class NumberQuizGameTest {
-    private Game game;
+
+public class NumberQuizGameStartTest {
+    private static Game game;
 
     @BeforeAll
-    void init() {
-        game = new Game();
+    public static void init() {
+        game = Game.startGame();
         assertNotNull(game);
+    }
+
+    @Test
+    void should_initRangeFrom0to100_When_InitRangeNotSpecified() {
+        assertEquals("0..100", game.getRange().toString());
+    }
+
+    @Test
+    void shouldThrownException_When_RangeGreaterThan100() {
+        assertThrows(WrongRangeException.class, () -> {
+            Game gameWithUpperRangeValue = Game.startGame(0, 120);
+        });
     }
 
     @Test
