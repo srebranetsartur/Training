@@ -13,11 +13,6 @@ public class Game {
         private static final int RAND_MAX = 100;
         private static final int LOWER_RANGE_BOUND = 0;
 
-        //Delimiters uses for printRange
-        private final static char PREFIX = '[';
-        private final static String OVERLAPS = "...";
-        private final static char SUFFIX = ']';
-
         private int lowerBound;
         private int upperBound;
 
@@ -50,11 +45,7 @@ public class Game {
 
         @Override
         public String toString() {
-            return "" + Range.PREFIX
-                    + getLowerBound()
-                    + Range.OVERLAPS
-                    + getUpperBound()
-                    + Range.SUFFIX;
+            return "[" + lowerBound + upperBound + "]";
         }
     }
 
@@ -115,7 +106,7 @@ public class Game {
     }
 
     public boolean isQuizInRange(int quiz) {
-        return quiz >= getLowerBound() && quiz <= getUpperBound();
+        return quiz >= range.lowerBound && quiz <= range.upperBound;
     }
 
     public boolean isNumberEqualsToQuiz(int number) {
@@ -128,14 +119,6 @@ public class Game {
 
     public Range getRange() {
         return range;
-    }
-
-    public int getLowerBound() {
-        return range.lowerBound;
-    }
-
-    public int getUpperBound() {
-        return range.upperBound;
     }
 
     public int getNumberOfAttempts() {

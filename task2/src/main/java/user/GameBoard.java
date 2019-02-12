@@ -1,6 +1,11 @@
 package user;
 
 public class GameBoard {
+    //Delimiters uses for printRange
+    private final static char PREFIX = '[';
+    private final static String OVERLAPS = "...";
+    private final static char SUFFIX = ']';
+
     public enum Message {
         INPUT_RANGE("Enter two value for game range in any order"),
         BOUND_ERROR("Wrong lower range limit. It must be in range: "),
