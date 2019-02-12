@@ -1,6 +1,5 @@
 package quizgame;
 
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
@@ -28,31 +27,18 @@ public class Game {
         public int getUpperBound() {
             return upperBound;
         }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj == this) return true;
-            if(!(obj instanceof Range)) return false;
-            Range r = (Range) obj;
-            return r.lowerBound == lowerBound &&
-                    r.upperBound == upperBound;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return "[" + lowerBound + upperBound + "]";
-        }
     }
 
     private static class NumberGenerator {
         private static int generateNumber(Range range) {
             return ThreadLocalRandom.current().nextInt(range.lowerBound, range.upperBound);
         }
+    }
+
+    private Game(int firstBound, int secondBound) {
+        range = initRange(firstBound, secondBound);
+        saveDefaultRange();
+        quizNumber = NumberGenerator.generateNumber(range);
     }
 
     public static Game startGame() {
@@ -70,11 +56,7 @@ public class Game {
         return bound >= 0 && bound <= 100;
     }
 
-    private Game(int firstBound, int secondBound) {
-        range = initRange(firstBound, secondBound);
-        saveDefaultRange();
-        quizNumber = NumberGenerator.generateNumber(range);
-    }
+
 
     public void resizeRange(int newLowerBound, int newUpperBound) {
         if(validateNewRangeValue(newLowerBound, newUpperBound)) {
