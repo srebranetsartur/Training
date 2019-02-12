@@ -38,28 +38,28 @@ public class Game {
         }
     }
 
+    public static Game startGame() {
+        return new Game(Range.LOWER_RANGE_BOUND, Range.RAND_MAX);
+    }
+
+    public static Game startGame(int firstBound, int secondBound) {
+        return new Game(firstBound, secondBound);
+    }
+
     private Game(int firstBound, int secondBound) {
         range = initRange(firstBound, secondBound);
         saveDefaultRange();
         quizNumber = NumberGenerator.generateNumber(range);
     }
 
-    public static Game startGame() {
-        return new Game(Range.LOWER_RANGE_BOUND, Range.RAND_MAX);
+    private Range initRange(int firstBound, int secondBound) {
+        return (firstBound > secondBound) ? new Range(secondBound, firstBound)
+                : new Range(firstBound, secondBound);
     }
 
-    public static Game startGame(int firstBound, int secondBound) {
-        if(isBoundValid(firstBound) && isBoundValid(secondBound))
-            return new Game(firstBound, secondBound);
-
-        throw new WrongRangeException();
+    private void saveDefaultRange() {
+        primaryRange = new Range(range.lowerBound, range.upperBound);
     }
-
-    private static boolean isBoundValid(int bound) {
-        return bound >= 0 && bound <= 100;
-    }
-
-
 
     public void resizeRange(int newLowerBound, int newUpperBound) {
         if(validateNewRangeValue(newLowerBound, newUpperBound)) {
@@ -69,25 +69,8 @@ public class Game {
             throw new WrongRangeException();
     }
 
-    private Range initRange(int firstBound, int secondBound) {
-        Range r;
-
-        if(firstBound > secondBound) {
-            r = new Range(secondBound, firstBound);
-        }
-        else {
-            r = new Range(firstBound, secondBound);
-        }
-
-        return r;
-    }
-
     private boolean validateNewRangeValue(int newLowerBound, int newUpperBound) {
         return range.lowerBound <= newLowerBound && range.upperBound >= newUpperBound;
-    }
-
-    private void saveDefaultRange() {
-        primaryRange = new Range(range.lowerBound, range.upperBound);
     }
 
     public boolean isQuizInRange(int quiz) {
@@ -117,6 +100,4 @@ public class Game {
     public void increaseNumberOfAttempts() {
         numberOfAttempts++;
     }
-
-
 }
