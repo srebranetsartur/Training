@@ -1,3 +1,5 @@
+package view;
+
 public class View {
     public static final String WRONG_WORD = "Wrong word. Please try again!";
     public static final String CORRECT_WORD = "Word is correct";

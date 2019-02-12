@@ -1,3 +1,8 @@
+package controller;
+
+import model.Model;
+import view.View;
+
 import java.util.Scanner;
 
 public class Controller {
