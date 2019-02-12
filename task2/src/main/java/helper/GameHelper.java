@@ -4,6 +4,7 @@ import quizgame.Game;
 import quizgame.WrongRangeException;
 import user.GameBoard;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GameHelper {
@@ -21,13 +22,15 @@ public class GameHelper {
         initGameRange(sc);
 
         board.printMessage(GameBoard.Message.START_GAME);
+        board.printMessage("Started range: " + rangeToString(game.getRange()));
 
         try {
             while (!isGameEnd) {
+                System.out.println(GameBoard.Message.ENTER_QUIZ);
                 int number = enterNumber(sc);
 
                 if (isNumberEqualsToQuizNumber(number)) {
-                    congratMessage();
+                    endGameAndPrintStatistic();
                 } else if (isNumberInRange(number)) {
                     numberInRangeMessage(number);
                 } else {
@@ -36,7 +39,7 @@ public class GameHelper {
             }
         } catch (WrongRangeException e) {
             board.printMessage(GameBoard.Message.BOUND_ERROR);
-            System.out.println(game.getRange());
+            board.printMessage(rangeToString(game.getRange()));
         }
     }
 
@@ -45,52 +48,48 @@ public class GameHelper {
 
         while(true) {
             try {
-                for (int i = 0; i < 2; i++) {
                     board.printMessage(GameBoard.Message.INPUT_RANGE);
 
-                    while (!sc.hasNextInt()) {
-                        sc.next();
-                        board.printMessage(GameBoard.Message.NOT_A_NUMBER);
-                    }
-
-                    rangeInputs[i] = sc.nextInt();
-                }
+                    rangeInputs[0] = enterNumber(sc);
+                    board.printMessage(GameBoard.Message.OK_NEXT);
+                    rangeInputs[1] = enterNumber(sc);
 
                 game = Game.startGame(rangeInputs[0], rangeInputs[1]);
                 break;
+            } catch (InputMismatchException e) {
+                board.printMessage(GameBoard.Message.NOT_A_NUMBER);
             } catch (WrongRangeException e) {
                 board.printMessage(GameBoard.Message.BOUND_ERROR);
-                System.out.println(game.getRange());
+                rangeToString(game.getRange());
             }
         }
     }
 
-    private void congratMessage() {
+    private int enterNumber(Scanner scanner) {
+        while(!scanner.hasNextInt()) {
+            board.printMessage("Error value: " + scanner.next());
+            board.printMessage(GameBoard.Message.NOT_A_NUMBER);
+        }
+        return scanner.nextInt();
+    }
+
+    private void endGameAndPrintStatistic() {
         board.printMessage(GameBoard.Message.CONGRATULATION);
         isGameEnd = true;
         printStatistic();
     }
 
     private void printStatistic() {
-        System.out.println("Quiz number was: " + game.getQuizNumber());
-        System.out.println("Default range was: " + game.getPrimaryRange());
-        System.out.println("Attempts: " + game.getNumberOfAttempts());
+        board.printMessage("Quiz number was: " + game.getQuizNumber());
+        board.printMessage("Default range was: " + rangeToString(game.getPrimaryRange()));
+        board.printMessage("Attempts: " + game.getNumberOfAttempts());
     }
 
     private void numberInRangeMessage(int number) {
         board.printMessage(GameBoard.Message.ALREADY_IN);
         game.increaseNumberOfAttempts();
         createSuggestiveRange(number);
-        System.out.println("Find in this range: " + game.getRange());
-    }
-
-    private int enterNumber(Scanner scanner) {
-        System.out.println(GameBoard.Message.ENTER_QUIZ);
-
-        while(!scanner.hasNextInt()) {
-            board.printMessage(GameBoard.Message.NOT_A_NUMBER);
-        }
-        return scanner.nextInt();
+        board.printMessage("Find in this range: " + rangeToString(game.getRange()));
     }
 
     private boolean isNumberInRange(int number) {
@@ -111,5 +110,12 @@ public class GameHelper {
 
     private void changeRange(int newLowerBound, int newUpperBound) {
         game.resizeRange(newLowerBound, newUpperBound);
+    }
+
+    private String rangeToString(Game.Range range) {
+        return GameBoard.PREFIX + range.getLowerBound() +
+                GameBoard.OVERLAPS +
+                range.getUpperBound() +
+                GameBoard.SUFFIX;
     }
 }
