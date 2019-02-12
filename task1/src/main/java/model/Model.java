@@ -1,3 +1,5 @@
+package model;
+
 public class Model {
     public static final String[] VALID_ARGS = {"hello", "world!"};
 
@@ -18,6 +20,6 @@ public class Model {
 
     //Equals two word in lower registry
     public boolean validateWord(String word, int argIndex) {
-        return word.toLowerCase().equals(VALID_ARGS[argIndex].toLowerCase());
+        return word.equalsIgnoreCase(VALID_ARGS[argIndex]);
     }
 }
