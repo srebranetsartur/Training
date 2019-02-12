@@ -84,9 +84,6 @@ public class GameHelper {
         System.out.println("Find in this range: " + game.getRange());
     }
 
-
-
-
     private int enterNumber(Scanner scanner) {
         System.out.println(GameBoard.Message.ENTER_QUIZ);
 
@@ -108,13 +105,11 @@ public class GameHelper {
         if(number < game.getQuizNumber()) {
             changeRange(number, game.getRange().getUpperBound());
         } else {
-            changeRange(game.getLowerBound(), number);
+            changeRange(game.getRange().getLowerBound(), number);
         }
     }
 
     private void changeRange(int newLowerBound, int newUpperBound) {
         game.resizeRange(newLowerBound, newUpperBound);
     }
-
-
 }
