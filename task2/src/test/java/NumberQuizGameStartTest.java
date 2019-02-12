@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import quizgame.Game;
 import quizgame.WrongRangeException;
@@ -6,13 +7,23 @@ import quizgame.WrongRangeException;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class NumberQuizGameStartTest {
+class NumberQuizGameStartTest {
     private static Game game;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         game = Game.startGame();
         assertNotNull(game);
+    }
+
+    @RepeatedTest(1000)
+    void QuizNumber_ShouldEquals_To_0_AtLeast_OneTime() {
+        assertEquals(0, Game.startGame().getQuizNumber());
+    }
+
+    @RepeatedTest(1000)
+    void QuizNumber_ShouldEquals_To_100_AtLeast_OneTime() {
+        assertEquals(100, Game.startGame().getQuizNumber());
     }
 
     @Test
@@ -22,9 +33,8 @@ public class NumberQuizGameStartTest {
 
     @Test
     void shouldThrownException_When_RangeGreaterThan100() {
-        assertThrows(WrongRangeException.class, () -> {
-            Game gameWithUpperRangeValue = Game.startGame(0, 120);
-        });
+        assertThrows(WrongRangeException.class, () ->
+            Game.startGame(0, 120));
     }
 
     @Test
