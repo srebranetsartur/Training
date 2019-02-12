@@ -30,8 +30,11 @@ public class Game {
     }
 
     private static class NumberGenerator {
+        /*
+        Parameter range.upperBound added 1 needed to include upperBound to generation algorithm
+         */
         private static int generateNumber(Range range) {
-            return ThreadLocalRandom.current().nextInt(range.lowerBound, range.upperBound);
+            return ThreadLocalRandom.current().nextInt(range.lowerBound, range.upperBound + 1);
         }
     }
 
