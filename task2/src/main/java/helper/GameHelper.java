@@ -30,7 +30,8 @@ public class GameHelper {
                 int number = enterNumber(sc);
 
                 if (isNumberEqualsToQuizNumber(number)) {
-                    endGameAndPrintStatistic();
+                    isGameEnd = true;
+                    printStatistic();
                 } else if (isNumberInRange(number)) {
                     numberInRangeMessage(number);
                 } else {
@@ -73,13 +74,8 @@ public class GameHelper {
         return scanner.nextInt();
     }
 
-    private void endGameAndPrintStatistic() {
-        board.printMessage(GameBoard.Message.CONGRATULATION);
-        isGameEnd = true;
-        printStatistic();
-    }
-
     private void printStatistic() {
+        board.printMessage(GameBoard.Message.CONGRATULATION);
         board.printMessage("Quiz number was: " + game.getQuizNumber());
         board.printMessage("Default range was: " + rangeToString(game.getPrimaryRange()));
         board.printMessage("Attempts: " + game.getNumberOfAttempts());
