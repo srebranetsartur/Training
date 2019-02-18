@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserRecordTest {
     @Test
     void Should_Contain_14_AllowedKeys() {
-        int keysSize = AllowedFields.FIELD.size();
-        assertEquals(14, keysSize);
+        int keysSize = AllowedFields.FIELD_REGEX.size();
+        assertEquals(16, keysSize);
     }
 }

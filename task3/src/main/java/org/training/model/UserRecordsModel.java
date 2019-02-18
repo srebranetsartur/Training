@@ -1,6 +1,8 @@
 package org.training.model;
 
+
 import org.training.model.entities.UserRecord;
+import org.training.model.entities.datafields.UserField;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,21 +11,39 @@ public final class UserRecordsModel {
     private static UserRecordsModel INSTANCE;
 
     private final List<UserRecord> userRecords;
-    private UserRecord userRecord;
+    private UserRecord.Builder userRecordBuilder;
 
     private UserRecordsModel() {
         userRecords = new LinkedList<>();
     }
 
-    private static UserRecordsModel instanceOf() {
+    public static UserRecordsModel instance() {
         if(INSTANCE == null)
             INSTANCE = new UserRecordsModel();
 
         return INSTANCE;
     }
 
-    public void addRecord(UserRecord record) {
-        userRecords.add(record);
+    public void saveRecord() {
+        userRecords.add(userRecordBuilder.build());
+        userRecordBuilder = null;
+    }
+
+    public void addField(String fieldName, String fieldValue) {
+        if(userRecordBuilder == null)
+            userRecordBuilder = new UserRecord.Builder();
+
+        if(UserField.VALIDATOR.validate(fieldName, fieldValue)) {
+            UserField userField = new UserField(fieldName, fieldValue);
+            userRecordBuilder.addDataField(userField);
+        }
+        else
+            throw new RuntimeException("Wrong field value");
+
+    }
+
+    public List<UserRecord> getUserRecords() {
+        return userRecords;
     }
 
     @Override

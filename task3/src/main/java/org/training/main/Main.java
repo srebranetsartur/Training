@@ -9,7 +9,6 @@ public class Main {
         UserForm userForm = new UserForm();
         UserFormController controller = new UserFormController(userForm);
 
-        controller.addUser();
-        controller.printUsers();
+        controller.execute();
     }
 }

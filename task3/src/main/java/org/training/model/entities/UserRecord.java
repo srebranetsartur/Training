@@ -1,6 +1,7 @@
 package org.training.model.entities;
 
 import org.training.model.entities.datafields.DataField;
+import org.training.model.entities.datafields.UserField;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,12 +24,8 @@ public class UserRecord {
         }
 
         public Builder addDataField(DataField dataField) {
-            if(dataField.isFieldValid()) {
-                dataFields.add(dataField);
-                return this;
-            }
-
-            throw new IllegalArgumentException(dataField.getFieldName() +" has incorrect value: " + dataField.getValue());
+            dataFields.add(dataField);
+            return this;
         }
 
         public UserRecord build() {

@@ -1,41 +1,19 @@
 package org.training.model.entities.datafields;
 
 import org.training.model.validator.Validator;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public abstract class AbstractDataField implements DataField {
     private String fieldName;
     private String value;
-    private String regex;
-    private Validator validator;
+    public static final Validator VALIDATOR = (fieldName, value) -> {
+        String regex = AllowedFields.FIELD_REGEX.get(fieldName);
+        return AllowedFields.FIELD_REGEX.containsKey(fieldName) && value.matches(regex);
+    };
 
-    public AbstractDataField(String name, String value) {
-        this.fieldName = name;
+    public AbstractDataField(String fieldName, String value) {
+        this.fieldName = fieldName;
         this.value = value;
-        regex = initRegex(name);
-        validator = String::matches;
-    }
-
-    public boolean isFieldValid() {
-        return validator.validate(fieldName, regex);
-    }
-
-    private String initRegex(String propertySuffix) {
-        return ResourceBundleHelper.getRegexFromProperty(propertySuffix);
-    }
-
-    private static class ResourceBundleHelper {
-        private static String getRegexFromProperty(final String propertySuffix) {
-            ResourceBundle regexResourceBundle = ResourceBundle.getBundle("regex", Locale.getDefault());
-            String propertyName = createPropertyName(propertySuffix);
-            return regexResourceBundle.getString(propertyName);
-        }
-
-        private static String createPropertyName(String propertySuffix) {
-            return AllowedFields.PREFIX + propertySuffix.toLowerCase();
-        }
     }
 
     @Override

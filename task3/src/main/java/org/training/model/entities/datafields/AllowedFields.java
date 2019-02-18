@@ -6,20 +6,21 @@ public class AllowedFields {
     public static final String PREFIX = "data.validator.";
     private AllowedFields() {}
 
-    public static final Set<String> FIELD = Collections.unmodifiableSet(
-            new HashSet<>(getKeysFromBundle())
+    public static final Map<String, String> FIELD_REGEX = Collections.unmodifiableMap(
+            new HashMap<>(convertResourceBundleToMap())
     );
 
-    private static List<String> getKeysFromBundle() {
-        List<String> keyList = new ArrayList<>();
+    private static Map<String, String> convertResourceBundleToMap() {
+        Map<String, String> fieldRegex = new LinkedHashMap<>();
 
         ResourceBundle regexBundle = ResourceBundle.getBundle("regex", Locale.getDefault());
         Enumeration<String> keys = regexBundle.getKeys();
         while(keys.hasMoreElements()) {
-            String key = keys.nextElement().substring(PREFIX.length()).toLowerCase();
-            keyList.add(key);
+            String fullKey = keys.nextElement();
+            String key = fullKey.substring(PREFIX.length());
+            fieldRegex.put(key, regexBundle.getString(fullKey));
         }
 
-        return keyList;
+        return Collections.unmodifiableMap(fieldRegex);
     }
 }
