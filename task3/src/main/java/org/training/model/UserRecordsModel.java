@@ -2,19 +2,13 @@ package org.training.model;
 
 
 import org.training.model.entities.UserRecord;
-import org.training.model.entities.datafields.UserField;
-
-import java.util.LinkedList;
 import java.util.List;
 
 public final class UserRecordsModel {
     private static UserRecordsModel INSTANCE;
 
-    private final List<UserRecord> userRecords;
-    private UserRecord.Builder userRecordBuilder;
-
     private UserRecordsModel() {
-        userRecords = new LinkedList<>();
+
     }
 
     public static UserRecordsModel instance() {
@@ -24,32 +18,18 @@ public final class UserRecordsModel {
         return INSTANCE;
     }
 
-    public void saveRecord() {
-        userRecords.add(userRecordBuilder.build());
-        userRecordBuilder = null;
-    }
-
-    public void addField(String fieldName, String fieldValue) {
-        if(userRecordBuilder == null)
-            userRecordBuilder = new UserRecord.Builder();
-
-        if(UserField.VALIDATOR.validate(fieldName, fieldValue)) {
-            UserField userField = new UserField(fieldName, fieldValue);
-            userRecordBuilder.addDataField(userField);
-        }
-        else
-            throw new RuntimeException("Wrong field value");
-
+    public void saveUserRecord(UserRecord userRecord) {
+        UserRecordDB.USER_RECORDS.add(userRecord);
     }
 
     public List<UserRecord> getUserRecords() {
-        return userRecords;
+        return UserRecordDB.USER_RECORDS;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(UserRecord record: userRecords) {
+        for(UserRecord record: UserRecordDB.USER_RECORDS) {
             stringBuilder
                     .append("User")
                     .append("-----------------------")

@@ -2,7 +2,9 @@ package org.training.controller;
 
 import org.training.model.UserRecordsModel;
 import org.training.model.entities.UserRecord;
-import org.training.model.entities.datafields.AllowedFields;
+import org.training.model.exception.LoginAlreadyExistException;
+import org.training.model.exception.WrongFieldValueException;
+import org.training.model.validator.ValidatorUtils;
 import org.training.userform.UserForm;
 
 import java.util.*;
@@ -10,6 +12,9 @@ import java.util.*;
 public class UserFormController {
     private UserForm userForm;
     private UserRecordsModel userRecordsModel;
+
+    private String[] inputs = new String[InputField.INPUT_FIELD.size()];
+    int index = 0;
 
 
     public UserFormController(UserForm userForm) {
@@ -19,65 +24,58 @@ public class UserFormController {
 
     public void execute() {
         Scanner scanner = new Scanner(System.in);
-        List<String> fieldList = new LinkedList<>(AllowedFields.FIELD_REGEX.keySet());
 
-        while(true) {
-            userForm.printMessage(UserForm.SELECT_FIELD_MESSAGE);
-            printFieldList(fieldList);
+        userForm.printMessage(UserForm.START_INPUT);
+        while (!scanner.next().equals("-q")) {
 
-            int fieldNum = inputFieldNum(fieldList, scanner);
-            if(fieldNum == -1) {
-                userRecordsModel.saveRecord();
-                break;
+            for (String field : InputField.INPUT_FIELD) {
+                enterValueForField(field, scanner);
             }
 
-            String fieldName = getFieldNameByNum(fieldList, fieldNum);
-
-            String formatMessage = String.format(UserForm.ENTER_VALUE, fieldName);
-            userForm.printMessage(formatMessage);
-
-            String fieldValue = inputFieldValue(fieldName, scanner);
-
-            userRecordsModel.addField(fieldName, fieldValue);
+            UserRecord userRecord = new UserRecord(inputs[0], inputs[1], inputs[2], inputs[3]);
+            userRecordsModel.saveUserRecord(userRecord);
+            index = 0;
+            userForm.printMessage(UserForm.SAVE_TO_DB);
+            userForm.printMessage("Enter -q to quit the app. Other symbol to continue.Unfinished entity won't commit to database");
         }
 
         printUsers();
     }
 
-    private void printFieldList(List<String> fieldList) {
-        for(int i = 0; i < fieldList.size(); i++)
-            userForm.printMessage((i+1) + ")" + fieldList.get(i));
-    }
-
-
-    public String getFieldNameByNum(List<String> fieldList, int num) {
-        return fieldList.get(num);
-    }
-
-    public int inputFieldNum(List<String> fieldList, Scanner scanner) {
-        String key = scanner.next();
-        if(key.equals("-s"))
-            return -1;
-
-        int fieldNum = Integer.parseInt(key);
-        fieldNum--;
-
-        while(fieldNum > fieldList.size()) {
-            userForm.printMessage(UserForm.WRONG_FIELD_NUMBER);
-            userForm.printMessage(UserForm.SELECT_FIELD_MESSAGE);
+    private void enterValueForField(String fieldName, Scanner scanner) {
+        while (true) {
+            userForm.printMessage(String.format(UserForm.ENTER_VALUE, fieldName));
+            String value = scanner.next();
+            try {
+                setField(fieldName, value);
+                break;
+            }
+            catch (WrongFieldValueException e) {
+                userForm.printMessage(String.format(UserForm.INVALID_FIELD_VALUE, fieldName, value));
+            }
+            catch (LoginAlreadyExistException e) {
+                userForm.printMessage(e.getMessage());
+            }
         }
-        return fieldNum;
     }
 
-    public String inputFieldValue(String fieldName, Scanner sc) {
-        return sc.next();
+    private void setField(String fieldName, String fieldValue) {
+        if(!validateInput(fieldName, fieldValue))
+            throw new WrongFieldValueException(fieldName, fieldValue);
+
+        if(fieldName.equals("login") && ValidatorUtils.isLoginUnique(fieldValue))
+            throw new LoginAlreadyExistException(fieldValue);
+
+        inputs[index++] = fieldValue;
     }
 
-    private void saveRecord() {
-        userRecordsModel.saveRecord();
+
+    private boolean validateInput(String fieldName, String fieldValue) {
+        return ValidatorUtils.validate(fieldName, fieldValue);
     }
 
-    public void printUsers() {
+
+    private void printUsers() {
         for(UserRecord record: userRecordsModel.getUserRecords())
             userForm.printMessage(record.toString());
     }

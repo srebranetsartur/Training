@@ -1,47 +1,56 @@
 package org.training.model.entities;
 
-import org.training.model.entities.datafields.DataField;
-import org.training.model.entities.datafields.UserField;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * Represent a single user record
  */
-public class UserRecord {
-    private Set<DataField> dataFields;
+public final class UserRecord {
+    private String name;
+    private String lastName;
+    private final String login;
+    private String number;
 
-    private UserRecord(Builder builder) {
-        dataFields = builder.dataFields;
+    public UserRecord(String name, String lastName, String login, String number) {
+        this.name = name;
+        this.lastName = lastName;
+        this.login = login;
+        this.number = number;
     }
 
-    public static class Builder {
-        private Set<DataField> dataFields;
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof UserRecord)) return false;
+        UserRecord ur = (UserRecord) obj;
+        return name.equals(ur.name) && lastName.equals(ur.lastName)
+                && login.equals(ur.login) && number.equals(ur.number);
+    }
 
-        public Builder() {
-            dataFields = new LinkedHashSet<>();
-        }
+    @Override
+    public int hashCode() {
+        int hash = name.hashCode();
+        hash = 31 * hash + lastName.hashCode();
+        hash = 31*hash + login.hashCode();
+        hash = 31*hash + number.hashCode();
 
-        public Builder addDataField(DataField dataField) {
-            dataFields.add(dataField);
-            return this;
-        }
-
-        public UserRecord build() {
-            return new UserRecord(this);
-        }
-
+        return hash;
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for(DataField field: dataFields) {
-            stringBuilder.append(field).append("\n");
-        }
+        String COMA_DELIMITER = ", ";
 
-        return stringBuilder.toString();
+        StringBuilder sb = new StringBuilder("Record: {");
+        sb.append(name).append(COMA_DELIMITER)
+                .append(lastName).append(COMA_DELIMITER)
+                .append(login).append(COMA_DELIMITER)
+                .append(number).append("}");
+
+        return sb.toString();
+    }
+
+
+    public String getLogin() {
+        return login;
     }
 }
 
